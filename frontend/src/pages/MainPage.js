@@ -1,7 +1,19 @@
 import { Box, DataTable, Header, Page, PageContent, PageHeader, Text } from "grommet";
-import React from "react";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchInventory } from "../store/inventoryReducer";
 
 const MainPage = () => {
+    const dispatch = useDispatch();
+    const inventory = useSelector(state => state.inventory.products);
+    const status = useSelector(state => state.inventory.status);
+
+    useEffect(() => {
+        if (status === "idle") {
+            dispatch(fetchInventory());
+        }
+    }, [dispatch, status]);
+
     const AppBar = (props) => (
         <Header
             // background="brand"
@@ -11,20 +23,39 @@ const MainPage = () => {
         />
     );
 
-    const Inventory = () => {
-        return (
-            <Box key="dataTable" alignSelf="start">
-                <DataTable columns={[
-                    { property: 'name', header: 'Name' },
-                    { property: 'quantity', header: 'Quantity' },
-                ]} data={[
-                    { name: 'Alan', color: 'blue' },
-                    { name: 'Chris', color: 'purple' },
-                    { name: 'Eric', color: 'orange' },
-                ]} sortable
-                />
-            </Box>
-        );
+    const InventoryTable = () => {
+        if (status === "loading") {
+            return (
+                <Box align="center" pad="large">
+                    <Text>Loading...</Text>
+                </Box>
+            );
+        } else if (status === "failed") {
+            return (
+                <Box align="center" pad="large">
+                    <Text>Error fetching inventory</Text>
+                </Box>
+            )
+        } else if (status === "succeeded") {
+            return (
+                <Box align="left" pad="large">
+                    <DataTable
+                        columns={[
+                            {
+                                property: "name",
+                                header: <Text>Name</Text>,
+                                primary: true,
+                            },
+                            {
+                                property: "quantity",
+                                header: <Text>Quantity</Text>,
+                            },
+                        ]}
+                        data={inventory}
+                    />
+                </Box>
+            );
+        }
     };
 
     return (
@@ -34,7 +65,7 @@ const MainPage = () => {
             </AppBar>
             <PageContent>
                 <PageHeader title="Inventory"/>
-                <Inventory/>
+                <InventoryTable/>
             </PageContent>
         </Page>
     );

@@ -2,7 +2,7 @@ import React from "react";
 import { grommet, Grommet } from 'grommet';
 import MainPage from "./pages/MainPage";
 import { Provider } from "react-redux";
-import store from "store/store";
+import store from "./store/store";
 
 // const theme = {
 //     global: {
