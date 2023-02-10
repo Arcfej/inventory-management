@@ -8,7 +8,6 @@ const initialState = {
 }
 
 const fetchInventory = createAsyncThunk('inventory/fetchInventory', async () => {
-    console.log("fetching inventory");
     const { data: { inventory } } = await axios.get("http://localhost:5000/api/inventory", { withCredentials: false });
     return inventory;
 });
@@ -80,7 +79,7 @@ export const inventorySlice = createSlice({
             })
             .addCase(modifyQuantity.fulfilled, (state, action) => {
                 state.status = "succeeded";
-                state.products.find(product => product.name === action.payload.name).quantity = action.payload.quantity;
+                state.products = action.payload.data.inventory;
                 state.error = null;
             })
             .addCase(modifyQuantity.rejected, (state) => {

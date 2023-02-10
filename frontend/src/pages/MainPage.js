@@ -2,11 +2,13 @@ import { Box, DataTable, Header, Page, PageContent, PageHeader, Text } from "gro
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchInventory } from "../store/inventoryReducer";
+import ProductActions from "../components/ProductActions";
 
 const MainPage = () => {
     const dispatch = useDispatch();
     const inventory = useSelector(state => state.inventory.products);
     const status = useSelector(state => state.inventory.status);
+    const error = useSelector(state => state.inventory.error);
 
     useEffect(() => {
         if (status === "idle") {
@@ -24,7 +26,7 @@ const MainPage = () => {
     );
 
     const InventoryTable = () => {
-        if (status === "loading") {
+        if (inventory.length === 0 && status === "loading") {
             return (
                 <Box align="center" pad="large">
                     <Text>Loading...</Text>
@@ -33,7 +35,7 @@ const MainPage = () => {
         } else if (status === "failed") {
             return (
                 <Box align="center" pad="large">
-                    <Text>Error fetching inventory</Text>
+                    <Text>{error}</Text>
                 </Box>
             )
         } else if (status === "succeeded") {
@@ -50,8 +52,17 @@ const MainPage = () => {
                                 property: "quantity",
                                 header: <Text>Quantity</Text>,
                             },
+                            {
+                                property: "actions",
+                                header: <Text></Text>,
+                                render: ({ name, quantity }) => {
+                                    return <ProductActions name={name} quantity={quantity}/>;
+                                },
+                                sortable: false,
+                            }
                         ]}
                         data={inventory}
+                        placeholder={inventory.length === 0 && <Text>No inventory</Text>}
                     />
                 </Box>
             );
