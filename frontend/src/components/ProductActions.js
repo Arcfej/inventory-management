@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Box, Button, Form, FormField, Grid, TextArea } from "grommet";
+import { Box, Button, Form, FormField, TextArea } from "grommet";
 import { modifyQuantity, removeProduct } from "../store/inventoryReducer";
 import { useDispatch } from "react-redux";
 
@@ -9,7 +9,7 @@ const ProductActions = ({ name, quantity }) => {
     const [ newQuantity, setNewQuantity ] = useState(quantity);
 
     return (
-        <Box direction="row" gap="small">
+        <Box direction="row" gap="small" justify="end">
             <Form
                 onSubmit={() => {
                     setIsEditing(false);
@@ -17,15 +17,7 @@ const ProductActions = ({ name, quantity }) => {
                 }}
                 validate="change"
             >
-                <Grid
-                    columns={{
-                          count: isEditing ? 4 : 3,
-                          size: 'auto',
-                        }}
-                    gap="small"
-                    fill={false}
-                    align="center"
-                >
+                <Box direction="row" gap="small" fill="false" align="center">
                     {isEditing &&
                         <FormField label="New Quantity"
                                    name="newQuantity"
@@ -39,7 +31,7 @@ const ProductActions = ({ name, quantity }) => {
                     <Button label="Remove" onClick={() => {
                         dispatch(removeProduct(name))
                     }}/>
-                </Grid>
+                </Box>
             </Form>
         </Box>
     );

@@ -1,7 +1,19 @@
-import { Box, DataTable, Header, Page, PageContent, PageHeader, Text } from "grommet";
+import {
+    Box,
+    DataTable,
+    Header,
+    Form,
+    FormField,
+    Page,
+    PageContent,
+    PageHeader,
+    Text,
+    TextInput,
+    Button
+} from "grommet";
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchInventory } from "../store/inventoryReducer";
+import { addProduct, fetchInventory } from "../store/inventoryReducer";
 import ProductActions from "../components/ProductActions";
 
 const MainPage = () => {
@@ -24,6 +36,26 @@ const MainPage = () => {
             {...props}
         />
     );
+
+    const AddProductForm = () => {
+        return (
+            <Box align="start" pad="large">
+                <Form onSubmit={({ value }) => {
+                    dispatch(addProduct({ name: value.name, quantity: value.quantity }));
+                }}>
+                    <Box direction="row" gap="medium">
+                        <FormField label="Name" name="name">
+                            <TextInput name="name"/>
+                        </FormField>
+                        <FormField label="Quantity" name="quantity">
+                            <TextInput name="quantity"/>
+                        </FormField>
+                        <Button label="Add product" type="submit"/>
+                    </Box>
+                </Form>
+            </Box>
+        );
+    }
 
     const InventoryTable = () => {
         if (inventory.length === 0 && status === "loading") {
@@ -76,6 +108,7 @@ const MainPage = () => {
             </AppBar>
             <PageContent>
                 <PageHeader title="Inventory"/>
+                <AddProductForm/>
                 <InventoryTable/>
             </PageContent>
         </Page>
